@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
-
+from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()
 app = FastAPI()
 
@@ -11,6 +11,24 @@ class AskRequest(BaseModel):
     url: str
     page_text: str
     question: str
+
+
+
+app = FastAPI()
+
+origins = [
+    "chrome-extension://pdckaconfphelloaggfhlnbjpbfekaof",  # replace with your actual extension ID
+    "http://localhost",  # if you test locally
+    "https://chrome-chat-assistant.onrender.com",  # your deployed API (optional for CORS if backend calls only)
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,            # restrict to specified origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/ask")
 async def ask(req: AskRequest):
